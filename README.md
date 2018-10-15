@@ -1,2 +1,2 @@
 # dragonb-txt-game
-Text based game system using python
+Text base game system using python

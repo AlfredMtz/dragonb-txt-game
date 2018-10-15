@@ -17,26 +17,26 @@ class Freezac(Character):
 
     def __init__(self):
         self.name = "Freeza"
-        self.health = 50
+        self.health = 20
         self.attack = 10
 
 class Cellc(Character):
 
     def __init__(self):
         self.name = "Cell"
-        self.health = 60
+        self.health = 30
         self.attack = 10
 
 class Majimbuc(Character):
 
     def __init__(self):
         self.name = "Majimbu"
-        self.health = 70
+        self.health = 40
         self.attack = 10
 
 class Dragonc(Character):
 
     def __init__(self):
         self.name = "Dragon"
-        self.health = 90
+        self.health = 50
         self.attack = 10

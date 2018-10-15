@@ -7,7 +7,6 @@ class Engine(object):
     # to variables, and be run inside as commanded.
     def __init__(self, scene_map):
         self.scene_map = scene_map
-        print(self.scene_map)
 
     # Function will run automatically if not any other parameters
     # are given besides itself.
@@ -26,19 +25,15 @@ class Engine(object):
         while current_scene != last_scene:
             # The enter() function needs to get define on
             # each scene class so it can be implemented here.
-            print(">>current_scene:", current_scene)
-            next_scene_name = current_scene.enter()
-            print(">>next_scene_name:", next_scene_name) 
+            next_scene_name = current_scene.enter() 
             # Current scene calls the next_scene function inheritaded
             # from Map() and the va lue on next_scene_name is given as
             # input
             current_scene = self.scene_map.next_scene(next_scene_name)
-            print(">>current_scene:", current_scene)
             # The enter() function is call to start executing the code
             # and it is enter inside of the play() fucntion, it only gets
             # executed when the play function get executed.
-            current_scene = current_scene.enter() 
-            print(">>current_scene1: ", current_scene)
+            #current_scene = current_scene.enter() 
 
 
 class Map(object):
@@ -48,8 +43,9 @@ class Map(object):
         'Freeza_world': scenes.Freezaworld(),
         'Cell_world': scenes.Cellworld(),
         'Majimbu_world': scenes.Majimbuworld(),
-        'One_start_dragon_world': scenes.Dragonworld(),
-        'Making_a_wish': scenes.Makingwish(),
+        'Dragon_world': scenes.Dragonworld(),
+        'Secret_box': scenes.SecretBox(),
+        'Make_wish': scenes.Makingwish(),
         'Death': scenes.Death(),
         'Completed': scenes.Completed(),
     }
@@ -72,6 +68,5 @@ class Map(object):
 # a_map becomes an instance of a Map class
 # At this point
 a_map = Map('Intro')
-print(a_map)
 a_game = Engine(a_map)
 a_game.play()

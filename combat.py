@@ -9,8 +9,7 @@ return weather player win, lose, or exits the game
 def attack(player_class, enemy_class):
     Player = player_class
     Enemy = enemy_class
-    
-    print("\nOk,Ready!!")
+    print('\nOK!')
     print(f"{Player.name}'s health:{Player.health} | {Enemy.name}'s health:{Enemy.health}")
 
     while Player.health >= 10 and Enemy.health >= 10:
