@@ -3,70 +3,57 @@ import scenes
 
 
 class Engine(object):
-    # Contructor for class to take arguments and assign them
-    # to variables, and be run inside as commanded.
+    # gives scene name to be run
     def __init__(self, scene_map):
         self.scene_map = scene_map
 
-    # Function will run automatically if not any other parameters
-    # are given besides itself.
     def play(self):
-        # first run returns backs to the same scene 'Intro()'
-        # since it is the first run.
+        # traces-in and saves scene into variable 'current_scene'
         current_scene = self.scene_map.open_scene()
-        # Last message when yo finish the whole game succesfully
+        # Last scene to be run once the game is succesfully completed
         last_scene = self.scene_map.next_scene('Completed')
-        #print("current_scene and last_scene before while-loop:")
-        #print(current_scene)
-        #print(last_scene) 
 
-        # while this statement is true keep running the loop
-        # otherwise exit the loop
+        # runs the game until 'current_scene becomes equal the last_scene
+        # than brakes the loop.
         while current_scene != last_scene:
-            # The enter() function needs to get define on
-            # each scene class so it can be implemented here.
+            # Runs and saves return value from enter() function into 'next_scene_variable'.
             next_scene_name = current_scene.enter() 
-            # Current scene calls the next_scene function inheritaded
-            # from Map() and the va lue on next_scene_name is given as
-            # input
+            # Runs the next scene in the game and saves it into 'current_scene' variable.
             current_scene = self.scene_map.next_scene(next_scene_name)
-            # The enter() function is call to start executing the code
-            # and it is enter inside of the play() fucntion, it only gets
-            # executed when the play function get executed.
-            #current_scene = current_scene.enter() 
-
+        
+        # After breaking from loop run the last scene and restart the game if asked by user
+        if current_scene == last_scene:
+            last_scene.enter()
+            a_game.play()
+        else:
+            pass
 
 class Map(object):
     # Reference scenes via diccionary values
     scenes = {
         'Intro': scenes.Intro(),
-        'Freeza_world': scenes.Freezaworld(),
-        'Cell_world': scenes.Cellworld(),
-        'Majimbu_world': scenes.Majimbuworld(),
-        'Dragon_world': scenes.Dragonworld(),
+        'Freeza_world': scenes.FreezaWorld(),
+        'Cell_world': scenes.CellWorld(),
+        'Majimbu_world': scenes.MajimbuWorld(),
+        'Dragon_world': scenes.DragonWorld(),
         'Secret_box': scenes.SecretBox(),
-        'Make_wish': scenes.Makingwish(),
-        'Death': scenes.Death(),
+        'Make_wish': scenes.MakingWish(),
         'Completed': scenes.Completed(),
     }
-    # Initialize a constructor
+    # Saves given paramete to class into variable/attribute
     def __init__(self, start_scene):
         self.start_scene = start_scene
 
-    # Define next scene fucntion
+    # Returns value from given key parameter in 'open_scene' function.
     def next_scene(self, scene_name):
         # Take specefic key value from scenes diccionary
         val = Map.scenes.get(scene_name)
         return val
 
-    # Runs next_scene function() for opening scene
+    # Runs given parameter value inside 'next_scene()' function
     def open_scene(self):
         return self.next_scene(self.start_scene)
 
-
-# Intro class becomes an object of the Map class
-# a_map becomes an instance of a Map class
-# At this point
 a_map = Map('Intro')
 a_game = Engine(a_map)
 a_game.play()
