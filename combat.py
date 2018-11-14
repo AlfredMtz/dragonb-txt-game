@@ -1,5 +1,6 @@
 import random
-from textwrap import dedent    
+from textwrap import dedent
+import characters    
 
 '''
 Combat system function 'attack()', two parameter given (Player Character Class, Enemy Character Class)
@@ -74,4 +75,4 @@ def attack(player_class, enemy_class):
         print("GAME OVER!")
         exit()
     elif Enemy.health < 10:
-        print("\nYOU WIN!") 
+        print(f"\n{Enemy.name} is defeated!!") 
