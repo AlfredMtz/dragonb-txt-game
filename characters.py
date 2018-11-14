@@ -14,6 +14,19 @@ class Player(Character):
         self.health = 100
         self.attack = 10
         
+class Dodoria(Character):
+    
+    def __init__(self):
+        self.name = "Dodoria"
+        self.health = 20
+        self.attack = 5
+
+class Zarbon(Character):
+    
+    def __init__(self):
+        self.name = "Zarbon"
+        self.health = 30
+        self.attack = 5
 
 class Freeza(Character):
 
@@ -42,3 +55,4 @@ class Dragon(Character):
         self.name = "Dragon"
         self.health = 50
         self.attack = 10
+
