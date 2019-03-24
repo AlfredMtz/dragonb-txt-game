@@ -5,7 +5,7 @@ import room
 
 
 class Scene(object):
-    
+    # Parent function
     def enter(self):
         print("This is the parent class for all upcoming scenes subclasses")
         exit()
