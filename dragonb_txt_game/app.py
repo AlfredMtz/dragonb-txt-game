@@ -31,8 +31,25 @@ def game():
             # why is there here? do I need it?
             return render_template("you_died.html")
 
+    # eLSE IF METHOD = "POST", THEN RUN THIS BLOCK
+    else: 
+        action = request.form.get('action')
+        
+        if room_name == 'intro':
+            room = planisphere.load_room(room_name)
+            next_room = room.go(action)
+            #pdb.set_trace() 
+            if not next_room:
+                # save session 'room_name' key  value to current 'room' variable
+                session['room_name'] = planisphere.name_room(room)
+            else:
+                session['room_name'] = planisphere.name_room(next_room)
+    
+    
+    return redirect(url_for("game"))
+
 # YOU SHOULD CHANGE THIS IF YOU PUT ON THE INTERNET
-app.secret_key = 'AOZr98j/3yX R~XHH!jmN]LWX/,?RT'
+app.secret_key = 'AOZr98j/3yX R~XHH!jmN]LWX/,?SS'
 
 if __name__ == "__main__":
     app.run()
