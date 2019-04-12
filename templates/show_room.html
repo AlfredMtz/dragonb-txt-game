@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<h1> {{ room.name }} </h1>
+<h1 style="text-align:center"> {{ room.name }} </h1>
 
-<pre>
+<pre style="text-align:center">
 {{ room.description }}
 </pre>
 
@@ -16,7 +16,7 @@
     <!-- On submit, send the form-data to a file named "/game" (to process the input): -->
     <!-- In this case, the collected data was saved to a key with the name "action" -->
     <!-- action= "WHERE TO SEND THE FORM DATA ONCE THE DATA IS SUMMITED" -->
-    <form action="/game" method="POST">
+    <form style="text-align:center" action="/game" method="POST">
         - <input type="text" name="action"> <input type="SUBMIT">
     </form>
 </p>
