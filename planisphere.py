@@ -58,19 +58,24 @@ soldiers by the name of Freeza is living.
 Type [next] to continue
 """)
 
-Freeza_World = Room("Freeza world", """
-to be continue
+Freeza_World = Room(
+    "Freeza world", """
+You finally arrived, you are at the Center of freeeza's world. 
+There's a path going north and south.
 """)
 
-Intro.add_paths({'yes': Zuno_World})
+Intro.add_paths({'yes': Zuno_World, 'no': Intro})
 
 Zuno_World.add_paths({'next': Freeza_World})
+
+Freeza_World.add_paths()
 
 START = 'intro'
 
 scences = {
     'intro': Intro,
     'yes': Zuno_World,
+    'no': Intro,
     'next': Freeza_World,
 }
 
