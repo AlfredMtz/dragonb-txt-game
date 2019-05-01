@@ -68,7 +68,7 @@ Intro.add_paths({'yes': Zuno_World, 'no': Intro})
 
 Zuno_World.add_paths({'next': Freeza_World})
 
-Freeza_World.add_paths()
+#Freeza_World.add_paths()
 
 START = 'intro'
 
