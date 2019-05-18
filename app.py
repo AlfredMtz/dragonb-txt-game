@@ -1,7 +1,7 @@
+import os
 from flask import Flask, session, redirect, url_for, escape, request
 from flask import render_template
 import planisphere
-import os
 
 from flask import Flask
 app = Flask(__name__)
