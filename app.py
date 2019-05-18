@@ -1,6 +1,7 @@
 from flask import Flask, session, redirect, url_for, escape, request
 from flask import render_template
 import planisphere
+import os
 
 from flask import Flask
 app = Flask(__name__)
@@ -50,7 +51,7 @@ def game():
     return redirect(url_for("game"))
 
 # YOU SHOULD CHANGE THIS IF YOU PUT ON THE INTERNET
-app.secret_key = 'AOZr98j/3yX R~XHH!jmN]LWX/,?SS'
+app.secret_key = os.environ.get('MY_DBTXT_GAME_KEY')
 
 if __name__ == "__main__":
     app.run() 
