@@ -2,9 +2,10 @@ from sys import exit
 
 
 class Room(object):
-    def __init__(self, name, description):
+    def __init__(self, name, description, helpsystem):
         self.name = name
         self.description = description
+        self.helpsystem = helpsystem
         self.paths = {}
 
     def go(self, direction):
@@ -14,8 +15,8 @@ class Room(object):
         self.paths.update(paths)
 
 
-Intro = Room(
-    "Intro", """
+Intro = Room("Intro", 
+"""
 WELCOME TO DRAGONBZ TEXT GAME!!!
 
 This story begins in a very, very far planet named Vegeta which
@@ -37,8 +38,7 @@ home and make a wish to have his family and village back to normality.
 Would you like to get on Goku's shoes and start the quest to saving your 
 village and bring your family back to life?
 
-[ yes / no ]
-""")
+[ yes / no ] """, None)
 
 Zuno_World = Room(
     "Zuno world", """
@@ -64,7 +64,10 @@ You finally arrived, you are at the Center of freeeza's world.
 There's a path going north and south.
 """)
 
-Intro.add_paths({'yes': Zuno_World, 'no': Intro})
+Intro.add_paths({
+    'yes': Zuno_World, 
+    'no': Intro
+    })
 
 Zuno_World.add_paths({'next': Freeza_World})
 
