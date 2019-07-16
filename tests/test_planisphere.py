@@ -53,17 +53,17 @@ def test_dragonb_game_map():
     # Freezas Grounds Room
     freezas_grounds_room = load_room(available_path)
     assert freezas_grounds_room.name == "Freezas Grounds"
-    assert freezas_grounds_room.go("player next play") == Enemy_Defeated
+    assert freezas_grounds_room.go("player next play") == Freeza_Defeated
     assert freezas_grounds_room.go("player go back") == Freezas_Forest
-    assert freezas_grounds_room.go("*") == Defeat_Death
+    assert freezas_grounds_room.go("*") == Player_Death
     assert freezas_grounds_room.go("player fight play") == None
     #next room
-    available_path1 = name_room(Enemy_Defeated)
+    available_path1 = name_room(Freeza_Defeated)
     available_path2 = name_room(Freezas_Forest)
-    available_path3 = name_room(Defeat_Death)
-    assert available_path1 == "enemy_defeated"
+    available_path3 = name_room(Player_Death)
+    assert available_path1 == "freeza_defeated"
     assert available_path2 == "freezas_forest"
-    assert available_path3 == "defeat_death"
+    assert available_path3 == "player_death"
 
     
 
