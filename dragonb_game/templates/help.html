@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<h5>{{ room.name }}</h5>
+<br>
+<br>
+{{ room.helpsystem}}
+<br>
+<br>
+<br>
+<a href="{{ url_for('game') }}" class="button">
+    <button type="button">Back to game!</button>
+{% endblock content %}

@@ -1,0 +1,5 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2 style="line-height: 200px;">Username: {{ current_user.username }}</h2>
+    <h4>Points accumulated : {{ current_user.score }}</h4>
+{% endblock content %}
