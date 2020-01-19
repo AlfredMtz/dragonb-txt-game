@@ -65,6 +65,10 @@ def test_dragonb_game_map():
     assert available_path2 == "freezas_forest"
     assert available_path3 == "player_death"
 
+    # Testing last scene and point counter
+    wish_room = name_room("Unexpected Challenge!")
+    assert wish_room.name == "Unexpected Challenge!"
+
     
 
 

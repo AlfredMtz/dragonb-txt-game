@@ -2,11 +2,13 @@ import os
 import secrets
 from PIL import Image
 from flask import render_template, session, redirect, url_for, escape, request, flash
-from dragonb_game import app, db, bcrypt
-from dragonb_game.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from dragonb_game import app, db, bcrypt, mail
+from dragonb_game.forms import (RegistrationForm, LoginForm, UpdateAccountForm, 
+                                RequestResetForm, ResetPasswordForm)
 from dragonb_game.models import User
 from dragonb_game import planisphere, lexicon, parser
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_mail import Message
 
 
 @app.route("/")
@@ -47,7 +49,14 @@ def game():
     dragon_balls = session.get('dragon_balls')
 
     if request.method == "GET":
-        if room_name:
+        if room_name == "game_finished":
+            room = planisphere.load_room(room_name)
+            current_user.score = current_user.score + 1
+            db.session.commit()
+            return render_template("show_room.html", room=room, p_name=p_name, p_health=p_health,
+                                   e_name=e_name, e_health=e_health, boxmap_counts=boxmap_counts,
+                                   dragon_balls=dragon_balls)
+        elif room_name :
             room = planisphere.load_room(room_name)
             return render_template("show_room.html", room=room, p_name=p_name, p_health=p_health,
                                    e_name=e_name, e_health=e_health, boxmap_counts=boxmap_counts,
@@ -121,31 +130,46 @@ def game():
 # REGISTER/CREATE ACCOUNT
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    # If user has successfully been logged in, redirect them to homepage
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+
     form = RegistrationForm()
+    # Run the code if all of the information in the form gets validated in accordance with
+    # all conditons
     if form.validate_on_submit():
+        # Emcrypts user's password
         hashed_password = bcrypt.generate_password_hash(
             form.password.data).decode('utf-8')
         user = User(username=form.username.data,
                     email=form.email.data, password=hashed_password)
+        # Persists user's new account data into our database
         db.session.add(user)
         db.session.commit()
+
+        # Confirmation message about account creating and directs user to our login page
         flash('Your account has been created! You are now able to log in', 'success')
         return redirect(url_for('login'))
+    # Reroutes user back to current page is some of the inputted data did not get validated.
     return render_template("register.html", title='Register', form=form)
+
 
 # LOGIN METHOD
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    # If user has successfully been logged in, redirect them to homepage
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+        # If user exists and password matches within the database
         if user and bcrypt.check_password_hash(user.password, form.password.data):
+            # if remember checkbox marked in the login page "remember" value will be True.
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
+            # if user logged in go to requested route, else go to home page
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
@@ -164,6 +188,7 @@ def save_picture(form_picture):
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
 
+    # Resizing Image: Saving space on file system and speeding up website.
     output_size = (125, 125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
@@ -174,18 +199,26 @@ def save_picture(form_picture):
 
 # ACCOUNT 
 @app.route("/account", methods=['GET', 'POST'])
+# login_required -- makes it requirement to be logged in before an user has access
+# to this route content.
 @login_required
 def account():
     form = UpdateAccountForm()
+    # If data update are valid, update the data as followed
     if form.validate_on_submit():
+        # Saving/Persisting updated picture 
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
             current_user.image_file = picture_file
-            current_user.username = form.username.data
-            current_user.email = form.email.data
-            db.session.commit()
-            flash('Your account has been updated!', 'success')
-            return redirect(url_for('account'))
+        # Then update/persist username, email and picture to database
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('account'))
+
+    # Populating our form with the current user's data if user's new data does not
+    # get validated/ is not allowed.
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
@@ -205,5 +238,58 @@ def help():
     room = planisphere.load_room(room_name)
     return render_template("help.html", room=room)
 
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request', 
+                sender='noreply@demo.com', 
+                recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link:
+{url_for('reset_token', token=token, _external=True)}
+
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
+    mail.send(msg)
 
 
+
+# Where users will request to reset their password
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    # If user is logged in, take them back to their home page, otherwise
+    # skip the lines of code and go to the reset request validation form.
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    #
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('An email has been sent with instructions to reset your password.', 'info')
+        return redirect(url_for('login'))
+    return render_template('reset_request.html', title='Reset Password', form=form)
+
+# Actual place where users will reset their password
+# When user goes to this url, the function will try to validate the "token" created
+# under the reset_request() function above, and present under the reset_password url
+@app.route("/reset_password<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    # If valid, it will return the user_id
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        # Emcrypts user's password
+        hashed_password = bcrypt.generate_password_hash(
+            form.password.data).decode('utf-8')
+        # Persists user's new updated password into our database
+        user.password = hashed_password
+        db.session.commit()
+
+        # Confirmation message about account creating and directs user to our login page
+        flash('Your password has been updated! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_token.html', title='Reset Password', form=form)

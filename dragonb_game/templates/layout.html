@@ -11,11 +11,17 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
+
+
+    <!-- If title given as paramater to rendertemplate diplay the title on the web eyelash.
+    Else, use a regular standard "Text Game" -->
     {% if title %}
     <title>Text Game - {{ title }}</title>
     {% else %}
     <title>Text Game</title>
     {% endif %}
+
+
     <style>
         body {
             color: black;
@@ -42,9 +48,12 @@
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
+                    <!-- Navegation bar display when users have been authenticated -->
                     <a class="nav-item nav-link" href="{{ url_for('account') }}">{{ current_user.username }} Account</a>
                     <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+
                     {% else %}
+                    <!-- Navegation bar display when users HAS NOT been authenticated -->
                     <a class="nav-item nav-link" href="{{ url_for('game') }}">Play as a guess</a>
                     <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
                     <a class="nav-item nav-link" href="{{ url_for('register') }}">Register </a>

@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="content-section">
+    <!-- action="" -- Information will get posted to the same route we are currently on -->
     <form method="POST" action="">
+        <!-- We are using the "form" instance we created under the "register" route in the
+        routes.py file-->
         {{form.hidden_tag() }}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Join Today</legend>

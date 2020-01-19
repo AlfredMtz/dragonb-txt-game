@@ -1,10 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="content-section">
+
     <form method="POST" action="">
         {{form.hidden_tag() }}
+        <!-- fieldset and legend for input's box design -->
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Log In</legend>
+
+            <!-- Email -->
             <div class="form-group">
                 {{form.email.label(class="form-control-label") }}
                 {% if form.email.errors %}
@@ -18,6 +22,8 @@
                 {{form.email(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+
+            <!-- password -->
             <div class="form-group">
                 {{form.password.label(class="form-control-label") }}
                 {% if form.password.errors %}
@@ -31,18 +37,25 @@
                 {{form.password(class="form-control form-control-lg") }}
                 {% endif %}
             </div>
+
+            <!-- Check box to remember user's login data for sometime -->
             <div class="form-check">
                 {{ form.remember(class="form-check-input")}}
                 {{ form.remember.label(class="form-check-label")}}
             </div>
         </fieldset>
+
+        <!-- This is the submit button -->
         <div class="form-group">
             {{ form.submit(class="btn btn-outline-info") }}
         </div>
+
+        <!-- This is the Forgot Password link reference for recovery-->
         <small class="text-muted ml-2">
-            <a href="#">Forgot Password?</a>
+            <a href="{{ url_for('reset_request') }}">Forgot Password?</a>
         </small>
     </form>
+
 </div>
 <div class="border-top pt-3">
     <small class="text-muted">
